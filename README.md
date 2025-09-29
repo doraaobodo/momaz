@@ -12,8 +12,7 @@ Fisher, SSz, and cwMCD**
 
 ## Installation
 
-You can install the development version of momaz from
-[GitHub](https://github.com/doraaobodo/momaz) with:
+You can install the development version of momaz with:
 
 ``` r
 # install.packages("remotes")
