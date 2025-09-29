@@ -1,13 +1,26 @@
 Package: momaz
-Title: What the Package Does (One Line, Title Case)
+Title: Analysis of Multi-Omic, Multi-Association Z-statistics
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: c(
+    person("Dora", "Obodo", email = "dora.obodo@stjude.org", role = c("aut", "cre", "cph")),
+    person("Stanley", "Pounds", email = stanley.pounds@stjude.org, role = "aut")
+    )
+Description: This package compiles statistical tools for consolidating multiple 
+    significance rankings from multi-omic association studies into consensus gene rankings. 
+    It compares Fisher’s method and the sum of squared z-statistics (SSz), 
+    to the recently developed cellwise Minimum Covariance Determinant (cellMCD) approach 
+    for gene prioritization. Functions are provided for diagnostics, evaluate 
+    performance in simulations, and generate visualizations for the three methods.
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 URL: https://github.com/doraaobodo/momaz
 BugReports: https://github.com/doraaobodo/momaz/issues
+Depends: R (>= 4.1)
+Imports: 
+    cellWise,
+    ellipse,
+    graphics,
+    mvtnorm,
+    stats

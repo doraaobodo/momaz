@@ -1,0 +1,61 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# momaz
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+**Consensus gene ranking from multi-omic association studies using Fisher, SSz, and cwMCD**
+
+## Installation
+
+You can install the development version of momaz from [GitHub](https://github.com/doraaobodo/momaz) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("doraaobodo/momaz")
+```
+## Description
+The \code{momaz} package implements and compares three statistical approaches for consolidating significance rankings from multi-omic association studies into consensus gene rankings:
+
+- **Fisher’s method**  
+- **Sum of squared z-statistics (SSz)**  
+- **Cellwise Minimum Covariance Determinant (cellMCD)**  
+
+The package includes functions to compute diagnostics, evaluate method performance in simulations, and generate visualizations such as bivariate scatterplots, uniform QQ plots, and ranked heatmaps.
+## How to Use:
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(momaz)
+# Example data (toy matrix)
+set.seed(123)
+X <- matrix(rnorm(100*5), nrow = 100, ncol = 5)
+
+# Run cwMCD
+res <- cwMCD(X)
+
+# Bivariate plot for first two variables
+plot_bivariate_cwMCD(res, vars = c("input.clm_1", "input.clm_2"))
+
+# QQ plot of p-values
+qq_uniform(res)
+
+# Heatmap of top rows by method
+heatmap_cwMCD(res, methods = c("MCD","Fisher","SSz"), top_n = 25)
+```
+
