@@ -35,7 +35,7 @@
 #' @examples
 #' \dontrun{
 #' set.seed(1)
-#' out <- sim.series(r = 2, m = 200, d = c(5, 10), perout = 0.05, farout = 0.5,
+#' out = sim.series(r = 2, m = 200, d = c(5, 10), perout = 0.05, farout = 0.5,
 #'                   outlierType = "casewise", corrType = c("independent", "ALYZ"))
 #' str(out$res.mtx)
 #' }
@@ -53,7 +53,7 @@ sim.series=function(r=100,
                     corrType=c("independent","ALYZ","A09"),
                     u=0:10000/10000,
                     seed=NULL)
-  
+
 {
   sim.settings=expand.grid(d=d,
                            perout=perout,
@@ -79,15 +79,15 @@ sim.series=function(r=100,
                          roc.mtx=sim.res$roc.mtx)
       auc.mtx[i,]=sim.res$auc
     }
-    
+
   }
   colnames(auc.mtx)=names(sim.res$auc)
-  
+
   res.mtx=cbind.data.frame(sim.settings,auc.mtx)
-  
+
   full.res=list(res.mtx=res.mtx,
                 res.list=res.list)
-  
+
   return(full.res)
 }
 
@@ -133,11 +133,10 @@ sim.series=function(r=100,
 #' @examples
 #' \dontrun{
 #' set.seed(123)
-#' res <- sim.metaZ(r = 3, m = 300, d = 4, perout = 0.05, farout = 0.5,
+#' res = sim.metaZ(r = 3, m = 300, d = 4, perout = 0.05, farout = 0.5,
 #'                  outlierType = "both", corrType = "A09",
 #'                  u = seq(0, 1, length.out = 51), seed = 42)
 #' names(res$auc)
-#' head(res$roc.mtx)
 #' }
 #'
 #' @importFrom cellWise generateCorMat generateData
@@ -153,14 +152,14 @@ sim.metaZ=function(r=100,                  # number of simulation reps
                    corrType="ALYZ",        # correlation type, see generateCorMat of cellWise package
                    u=0:10000/10000,        # u-grid for EDFs
                    seed=NULL)              # initial random seed
-  
+
 {
   seed0=seed
   S=matrix(0,d,d)
   diag(S)=1
   if (corrType!="independent")
-    S=generateCorMat(d,corrType,seed=seed)
-  
+    S=cellWise::generateCorMat(d,corrType,seed=seed)
+
   Zsim=gen.Zmtx(m,d,S,perout,farout,outlierType)
   h=attr(Zsim,"h")
   # mZ.result=metaZ(Zsim$X)
@@ -168,24 +167,24 @@ sim.metaZ=function(r=100,                  # number of simulation reps
   mZ.result = mZ.result$res.tbl
   pm=evaluate.performance(mZ.result,h)
   this.auc=attr(pm,"auc")
-  
+
   auc.lbls=names(this.auc)
   lvl.lbls=paste0("lvl_",auc.lbls)
   pwr.lbls=paste0("pwr_",auc.lbls)
-  
+
   this.roc=matrix(NA,length(u),length(this.auc))
   colnames(this.roc)=auc.lbls
   for (j in 1:length(this.auc))
   {
-    
+
     this.roc[,auc.lbls[j]]=approx(pm[,lvl.lbls[j]],
                                   pm[,pwr.lbls[j]],
                                   xout=u)$y
   }
-  
+
   auc=this.auc
   roc.mtx=this.roc
-  
+
   for (i in 1:(r-1))
   {
     Zsim=gen.Zmtx(m,d,S,perout,farout,outlierType)
@@ -196,23 +195,23 @@ sim.metaZ=function(r=100,                  # number of simulation reps
     this.auc=attr(pm,"auc")
     for (j in 1:length(auc))
     {
-      
+
       this.roc[,j]=approx(pm[,lvl.lbls[j]],
                           pm[,pwr.lbls[j]],
                           xout=u)$y
     }
-    
+
     auc=auc+this.auc
     roc.mtx=roc.mtx+this.roc
-    
-    
+
+
   }
-  
+
   auc=auc/r
   roc.mtx=roc.mtx/r
   roc.mtx=cbind(u,roc.mtx)
   colnames(roc.mtx)=c("lvl",names(auc))
-  
+
   res=list(auc=auc,
            roc.mtx=roc.mtx,
            pm=pm,
@@ -222,7 +221,7 @@ sim.metaZ=function(r=100,                  # number of simulation reps
            farout=farout,
            outlierType=outlierType,
            seed=seed0)
-  
+
   return(res)
 }
 
@@ -248,11 +247,11 @@ sim.metaZ=function(r=100,                  # number of simulation reps
 #' @importFrom cellWise generateData
 #' @importFrom stats rnorm
 #' @noRd
-#' 
+#'
 gen.Zmtx=function(m,d,Sigma,
                   perout,farout,
                   outlierType)
-  
+
 {
   mu=rep(0,d)
   Zsim=generateData(m,d,
@@ -261,7 +260,7 @@ gen.Zmtx=function(m,d,Sigma,
                     perout,
                     farout,
                     outlierType)
-  
+
   h=rep(0,m)
   if (!is.null(Zsim$indrows))
   {
@@ -319,8 +318,8 @@ evaluate.performance=function(mZ.result, # result of metaZ
   names(auc)=crit.clms
   colnames(pwr)=colnames(lvl)=crit.clms
   nas=na.clms[crit.clms]
-  
-  
+
+
   for (cr in crit.clms)
   {
     ord=rev(order(res[,cr]))
@@ -339,9 +338,9 @@ evaluate.performance=function(mZ.result, # result of metaZ
   }
   colnames(pwr)=paste0("pwr_",crit.clms)
   colnames(lvl)=paste0("lvl_",crit.clms)
-  
+
   res=cbind(res,pwr,lvl)
   attr(res,"auc")=auc
-  
+
   return(res)
 }
