@@ -3,7 +3,7 @@ Title: Analysis of Multi-Omic, Multi-Association Z-statistics
 Version: 0.0.0.9000
 Authors@R: c(
     person("Dora", "Obodo", email = "dora.obodo@stjude.org", role = c("aut", "cre", "cph")),
-    person("Stanley", "Pounds", email = stanley.pounds@stjude.org, role = "aut")
+    person("Stanley", "Pounds", email = "stanley.pounds@stjude.org", role = "aut")
     )
 Description: This package compiles statistical tools for consolidating multiple 
     significance rankings from multi-omic association studies into consensus gene rankings. 

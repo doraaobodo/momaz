@@ -14,7 +14,7 @@
 #'   the covariance matrix via \code{\link[cellWise]{generateCorMat}}
 #'   (default \code{c("independent","ALYZ","A09")}).
 #' @param u Numeric vector in \[0,1\] for the EDF grid used in ROC construction (default \code{0:10000/10000}).
-#' @param seed Optional integer. Random seed passed to \code{\link[base]{set.seed}} (default \code{NULL}).
+#' @param seed Optional integer. Random seed passed to \code{set.seed} (default \code{NULL}).
 #'
 #' @details
 #' For each row of the parameter grid (formed by \code{d}, \code{perout}, \code{farout},
@@ -30,7 +30,6 @@
 #'     the covariance matrix \code{S} used and the averaged ROC matrix \code{roc.mtx}.}
 #' }
 #'
-#' @seealso [sim.metaZ()], \code{\link[cellWise]{generateCorMat}}, [cwMCD()]
 #'
 #' @examples
 #' \dontrun{
@@ -73,7 +72,7 @@ sim.series=function(r=100,
                           outlierType=sim.settings$outlierType[i],
                           corrType=sim.settings$corrType[i],
                           u=u))
-    if (class(sim.res)!="try-error")
+    if (!inherits(sim.res, "try-error"))
     {
       res.list[[i]]=list(S=sim.res$S,
                          roc.mtx=sim.res$roc.mtx)
@@ -113,22 +112,16 @@ sim.series=function(r=100,
 #' @details
 #' The covariance matrix \code{S} is formed by \code{\link[cellWise]{generateCorMat}} unless
 #' \code{corrType == "independent"}, in which case \code{S = I_d}. Data are simulated by
-#' an internal generator [gen.Zmtx()], which wraps \code{\link[cellWise]{generateData}} and
-#' adds light noise to marked outlying rows/cells. Each replicate is evaluated via
-#' [cwMCD()] and summarized with [evaluate.performance()] to obtain AUC and
-#' partial ROC curves. Curves are linearly interpolated onto grid \code{u} and averaged.
+#' \code{\link[cellWise]{generateData}}.
 #'
 #' @return A list with:
 #' \describe{
 #'   \item{auc}{Named numeric vector of mean AUCs across replicates (one per criterion).}
 #'   \item{roc.mtx}{Matrix with columns \code{lvl} (EDF grid) and per-criterion mean ROC ordinates.}
-#'   \item{pm}{The last replicate's performance matrix from [evaluate.performance()] (includes attributes \code{auc}).}
+#'   \item{pm}{The last replicate's performance matrix (includes attributes \code{auc}).}
 #'   \item{S}{The covariance matrix used.}
 #'   \item{m, d, perout, farout, outlierType, seed}{Input parameters echoed back.}
 #' }
-#'
-#' @seealso [cwMCD()], \code{\link[cellWise]{generateCorMat}}, \code{\link[cellWise]{generateData}},
-#'   [evaluate.performance()]
 #'
 #' @examples
 #' \dontrun{
@@ -140,7 +133,7 @@ sim.series=function(r=100,
 #' }
 #'
 #' @importFrom cellWise generateCorMat generateData
-#' @importFrom stats approx set.seed
+#' @importFrom stats approx
 #' @export
 
 sim.metaZ=function(r=100,                  # number of simulation reps
@@ -177,7 +170,7 @@ sim.metaZ=function(r=100,                  # number of simulation reps
   for (j in 1:length(this.auc))
   {
 
-    this.roc[,auc.lbls[j]]=approx(pm[,lvl.lbls[j]],
+    this.roc[,auc.lbls[j]]=stats::approx(pm[,lvl.lbls[j]],
                                   pm[,pwr.lbls[j]],
                                   xout=u)$y
   }
@@ -298,10 +291,7 @@ gen.Zmtx=function(m,d,Sigma,
 #' Rows are ranked by each \code{*.crit} in descending order. Empirical TPR (\code{F1})
 #' and FPR (\code{F0}) are accumulated, de-duplicated on FPR, and trapezoid-integrated to obtain AUC.
 #'
-#' @seealso [sim.metaZ()], [cwMCD()]
-#'
 #' @keywords internal
-#' @importFrom stats colMeans order
 #' @noRd
 
 evaluate.performance=function(mZ.result, # result of metaZ

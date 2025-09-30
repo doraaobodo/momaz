@@ -1,4 +1,4 @@
-#' Cellwise Minimum Covariance Determinant (cwMCD) analysis
+#' Cellwise Minimum Covariance Determinant analysis
 #'
 #' Runs the cellwise MCD procedure on a numeric data matrix \code{X}, returning
 #' per-row outlier diagnostics including Fisher’s method, sum-of-squares
@@ -8,13 +8,13 @@
 #'   are variables. If row or column names are missing, they are automatically
 #'   assigned.
 #' @param alpha Numeric scalar (default \code{0.75}). Robustness parameter passed
-#'   to \code{\link{cellMCD}}.
+#'   to \code{\link[cellWise]{cellMCD}}.
 #' @param quant Numeric scalar (default \code{0.99}). Quantile cutoff passed to
-#'   \code{\link{cellMCD}}.
+#'   \code{\link[cellWise]{cellMCD}}.
 #' @param crit Numeric scalar (default \code{1e-4}). Convergence criterion.
 #' @param noCits Integer (default \code{100}). Maximum number of iterations.
 #' @param lmin Numeric scalar (default \code{1e-4}). Minimum eigenvalue bound.
-#' @param checkPars List of optional arguments passed to \code{\link{cellMCD}}
+#' @param checkPars List of optional arguments passed to \code{\link[cellWise]{cellMCD}}
 #'   (default \code{list()}).
 #'
 #' The output table includes original input columns (prefixed with
@@ -23,23 +23,20 @@
 #'
 #' @return A list with two elements:
 #' \describe{
-#'   \item{cellmcd.obj}{The raw object returned by \code{\link{cellMCD}},
-#'     containing robust location, scatter, and residuals.}
+#'   \item{cellmcd.obj}{The raw object returned by \code{\link[cellWise]{cellMCD}}.}
 #'   \item{res.tbl}{A \code{data.frame} with one row per observation, containing:
 #'     \describe{
-#'       \item{input.*}{Original variables.}
-#'       \item{max.abs.X.column}{Column with largest absolute input per row.}
-#'       \item{max.abs.X.value}{Value of largest absolute input per row.}
-#'       \item{fisher.stat, fisher.crit, fisher.pval}{Fisher’s combined test results.}
-#'       \item{SSz.stat, SSz.crit, SSz.pval}{Sum-of-squares Z-statistics.}
-#'       \item{MCD.stat, MCD.crit, MCD.pval}{Mahalanobis distances and p-values.}
-#'       \item{max.MCD.Z.column, max.MCD.Z.value}{Maximum cwMCD Z-score per row.}
-#'       \item{MCD.Z.*}{Per-variable cwMCD Z-scores.}
+#'       \item{\code{input.*}}{Original variables.}
+#'       \item{\code{max.abs.X.column}}{Column with largest absolute input per row.}
+#'       \item{\code{max.abs.X.value}}{Value of largest absolute input per row.}
+#'       \item{\code{fisher.stat}, \code{fisher.crit}, \code{fisher.pval}}{Fisher’s combined test results.}
+#'       \item{\code{SSz.stat}, \code{SSz.crit}, \code{SSz.pval}}{Sum-of-squares Z-statistics.}
+#'       \item{\code{MCD.stat}, \code{MCD.crit}, \code{MCD.pval}}{Mahalanobis distances and p-values.}
+#'       \item{\code{max.MCD.Z.column}, \code{max.MCD.Z.value}}{Maximum cwMCD Z-score per row.}
+#'       \item{\code{MCD.Z.*}}{Per-variable cwMCD Z-scores.}
 #'     }
 #'   }
 #' }
-#'
-#' @seealso \code{\link[cellwise]{cellMCD}}
 #'
 #' @examples
 #' \dontrun{
@@ -50,12 +47,16 @@
 #' }
 #'
 #' @importFrom cellWise cellMCD
+#' @importFrom stats mahalanobis
+#' @importFrom grDevices hcl.colors
+#' @importFrom graphics axis layout plot.new plot.window rect
+#' @importFrom stats mahalanobis pchisq pnorm
+#' @importFrom utils head tail
 #' @export
 #'
 cwMCD=function(X,alpha=0.75,quant=0.99,
                crit=1e-4,noCits=100,lmin=1e-4,
                checkPars=list())
-
 {
   if (is.null(rownames(X))) rownames(X)=paste0("row_",1:nrow(X))
   if (is.null(colnames(X))) colnames(X)=paste0("clm_",1:ncol(X))
@@ -142,13 +143,13 @@ cwMCD=function(X,alpha=0.75,quant=0.99,
 #' @param n Number of simulated points to generate from a bivariate normal with
 #'   correlation \code{rho} (default \code{100}). Set to \code{0} to suppress
 #'   simulation.
+#' @param ... Additional arguments passed to \code{plot()}
 #'
 #' @return A numeric matrix with two columns (\code{x1}, \code{x2}) containing
 #'   the simulated data points if \code{n > 0}.
 #'
 #' @importFrom ellipse ellipse
 #' @importFrom mvtnorm rmvnorm
-#' @seealso \code{\link[cellwise]{cellMCD}}, \code{\link{qq.uniform}}
 #'
 #' @examples
 #' \dontrun{

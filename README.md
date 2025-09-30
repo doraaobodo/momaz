@@ -8,7 +8,7 @@
 <!-- badges: end -->
 
 **Consensus gene ranking from multi-omic association studies using
-Fisher, SSz, and cwMCD**
+Fisher, SSz, and cellMCD**
 
 ## Installation
 

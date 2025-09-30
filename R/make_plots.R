@@ -20,7 +20,7 @@
 #' Fisher boundary is the level set of \eqn{-2\sum\log(p_i)} at the same quantile
 #' (converted back to z via \eqn{z = \Phi^{-1}(p/2)}), drawn symmetrically in all quadrants.
 #' The cellMCD boundary is an ellipse based on the robust covariance \code{S}
-#' returned by \code{cellwise::cellMCD}, drawn with \code{ellipse::ellipse}.
+#' returned by \code{cellWise::cellMCD}, drawn with \code{ellipse::ellipse}.
 #'
 #' @return (Invisibly) a list with the x/y vectors used to draw the three contours.
 #'
@@ -29,18 +29,17 @@
 #' set.seed(123)
 #' X = matrix(rnorm(1000*5), nrow = 1000, ncol = 5)
 #' mcd = cwMCD(X)
-#' plot.bivariate(mcd, vars = c(1,2), qnt = 0.99)
+#' plot_bivariate(mcd, vars = c(1,2), qnt = 0.99)
 #' }
 #'
 #' @importFrom ellipse ellipse
 #' @importFrom stats qchisq qnorm
 #' @importFrom graphics plot points lines polygon
 #' @export
-plot.bivariate = function(
+plot_bivariate = function(
     obj, vars, qnt = 0.99,
     xlim = c(-5, 5), ylim = c(-5, 5),
-    pch = 19, col = "darkgray", cex = 1.05,
-    ...
+    pch = 19, col = "darkgray", cex = 1.05, ...
 ) {
   # Accept either cwMCD list or just res.tbl
   res.tbl = if (is.list(obj) && !is.null(obj$res.tbl)) obj$res.tbl else obj
@@ -127,12 +126,12 @@ plot.bivariate = function(
 #' #' set.seed(123)
 #' X = matrix(rnorm(1000*5), nrow = 1000, ncol = 5)
 #' mcd = cwMCD(X)
-#' plot.qq.uniform(mcd, p = 0.01, thresh = 0.20)
+#' qq_uniform(mcd, p = 0.01, thresh = 0.20)
 #' }
 #'
 #' @importFrom graphics plot points lines mtext
 #' @export
-plot.qq.uniform = function(obj,  p = 0.01, thresh = 0.20, ...) {
+qq_uniform = function(obj,  p = 0.01, thresh = 0.20, ...) {
 
   res.tbl = if (is.list(obj) && !is.null(obj$res.tbl)) obj$res.tbl else obj
 
@@ -209,12 +208,12 @@ uqq.rmse=function(p,lwr=0)
 #' #' set.seed(123)
 #' X = matrix(rnorm(1000*5), nrow = 1000, ncol = 5)
 #' mcd = cwMCD(X)
-#' plot.heatmap(mcd, methods = c("MCD","Fisher","SSz"), top_n = 25)
+#' heatmap_mcd(mcd, methods = c("MCD","Fisher","SSz"), top_n = 25)
 #' }
 #'
 #' @importFrom graphics image text mtext par
 #' @export
-plot.heatmap = function(
+heatmap_mcd = function(
     obj,
     methods = c("MCD", "Fisher", "SSz"),
     top_n = 25,
